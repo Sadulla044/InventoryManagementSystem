@@ -52,6 +52,7 @@ class SignUp(View):
             if password == confirm:
                 user = form.save(commit=False)
                 user.password = make_password(password=password)
+                user.is_active = False
                 user.save()
                 code = randint(100000, 999999)
                 session = Code(request=request)
@@ -92,15 +93,15 @@ class Login(View):
         user = authenticate(request, username=email, password=password)
         if user:
             login(request, user=user)
-            return redirect('Main page')
+            return HttpResponse('Main page')
         else:
-            return redirect('Login page', 'error massage (email or password error)')
+            return redirect('auth:login')
 
 
 class Logout(View):
     def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect('Main Page')
+        return HttpResponse('Main Page')
 
 
 class EditAccount(View):
